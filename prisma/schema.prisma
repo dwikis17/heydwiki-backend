@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  year        Int
+  tags        String[] @default([])
+  links       Json     @default("[]")
+  client      String?
+  duration    String?
+  overviewHtml String  @default("")
+  challengeHtml String @default("")
+  solutionHtml String  @default("")
+  images      String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id             String   @id @default(uuid())
+  company        String
+  role           String
+  employmentType String?
+  location       String?
+  startMonth     String
+  endMonth       String?
+  isCurrent      Boolean  @default(false)
+  summaryHtml    String   @default("")
+  highlights     String[] @default([])
+  techTags       String[] @default([])
+  links          Json     @default("[]")
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  blogs       Blog[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  images      String[] @default([])
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
