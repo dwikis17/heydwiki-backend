@@ -34,6 +34,19 @@ export const createApp = () => {
     }
   });
 
+  app.get("/test", async (_req, res, next) => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      res.status(200).json({
+        ok: true,
+        message: "Server is healthy",
+        db: "connected"
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use("/api/auth", authRouter);
   app.use("/api/projects", projectRouter);
   app.use("/api/experiences", experienceRouter);
